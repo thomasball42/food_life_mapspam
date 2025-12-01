@@ -1,0 +1,104 @@
+import argparse
+import sys
+from pathlib import Path
+from typing import List
+
+import pandas as pd
+
+def species_generator(
+    data_dir: Path,
+    aohs_path: Path | None,
+    curve: str,
+    output_csv_path: Path,
+    scenarios: List[str],
+    species_info_dir = Path,
+    ):  
+    
+    if species_info_dir is None:
+        species_info_dir = data_dir / "species-info"
+    
+    taxas = [x.name for x in species_info_dir.iterdir()]
+
+    if aohs_path is None:
+        aohs_path = data_dir / "aohs"
+
+    if curve not in ["0.1", "0.25", "0.5", "1.0", "gompertz"]:
+        sys.exit(f'curve {curve} not in expected set of values: ["0.1", "0.25", "0.5", "1.0", "gompertz"]')
+
+    res = []
+    for taxa in taxas:
+        taxa_path = species_info_dir / taxa / "current"
+        speciess = list(taxa_path.glob("*.geojson"))
+        for scenario in scenarios:
+            for species in speciess:
+                res.append([
+                    species,
+                    aohs_path / "current" / taxa,
+                    aohs_path / scenario / taxa,
+                    aohs_path / "pnv" / taxa,
+                    curve,
+                    data_dir / "deltap" / scenario / curve / taxa,
+                ])
+
+    df = pd.DataFrame(res, columns=[
+        '--speciesdata',
+        '--current_path',
+        '--scenario_path',
+        '--historic_path',
+        '--z',
+        '--output_path',
+    ])
+    df.to_csv(output_csv_path, index=False)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Species and seasonality generator.")
+    parser.add_argument(
+        '--datadir',
+        type=Path,
+        help="directory for results",
+        required=True,
+        dest="data_dir",
+    )
+    parser.add_argument(
+        '--aohs_path',
+        type=Path,
+        help="Path to find AOHs in",
+        required=False,
+        dest="aohs_path",
+    )
+    parser.add_argument(
+        '--curve',
+        type=str,
+        choices=["0.1", "0.25", "0.5", "1.0", "gompertz"],
+        help='extinction curve, should be one of ["0.1", "0.25", "0.5", "1.0", "gompertz"]',
+        required=True,
+        dest="curve",
+    )
+    parser.add_argument(
+        '--output',
+        type=Path,
+        help="name of output file for csv",
+        required=True,
+        dest="output"
+    )
+    parser.add_argument(
+        '--scenarios',
+        nargs='*',
+        type=str,
+        help="list of scenarios to calculate LIFE for",
+        required=True,
+        dest="scenarios",
+    )
+    args = parser.parse_args()
+
+    species_generator(
+        args.data_dir,
+        args.aohs_path,
+        args.curve,
+        args.output,
+        args.scenarios,
+    )
+
+if __name__ == "__main__":
+    main()

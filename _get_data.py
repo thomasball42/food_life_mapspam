@@ -122,5 +122,16 @@ def get_data():
     else:
         print("Elevation data already present - skipping download and processing")
 
+    country_data = os.path.join("data", "inputs", "country_data","wb_shapefiles.zip")
+    if not os.path.isfile(country_data):
+        print("Downloading World Bank shapefiles...")
+        os.makedirs(os.path.dirname(country_data), exist_ok=True)
+        url = "https://datacatalogfiles.worldbank.org/ddh-published/0038272/5/DR0095371/World Bank Official Boundaries (Shapefiles)/World Bank Official Boundaries - Admin 0.zip"
+        download_file(url, country_data)
+        with zipfile.ZipFile(country_data, 'r') as zip_ref:
+            zip_ref.extractall(os.path.dirname(country_data))
+    else:
+        print("World Bank shapefiles already present - skipping download")
+
 if __name__ == "__main__":
     get_data()
