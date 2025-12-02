@@ -9,9 +9,11 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 from tqdm import tqdm # Import tqdm
+import warnings
+warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 # years = ["2000", "2005", "2010", "2020"]
-years = ["2000"]
+years = ["2010", "2020"]
 
 # global params
 target_shape = (2160, 4320)
@@ -50,6 +52,10 @@ def process_country(iso3, normalised_data, deltap_dataset):
     return mean_value, mean_err
 
 def normalise_spam_data_01(data_array, pixel_areas, target_shape, unit_conv=100):
+             """
+             # in this instance I use a ones array (cf the pixel areas), the delta-p array is 
+             # calculated at 'per-km2', so we just need 'km2' for the crop rasters
+             # """
              pixel_areas = pixel_areas[np.newaxis, :].T # turn into a column array
              pixel_areas = np.repeat(pixel_areas, target_shape[1], axis=1)
              proportional_output = (data_array / unit_conv) / pixel_areas # (Hectares / 100 = km2) / Area_km2 * 100 = % pixel
@@ -111,7 +117,8 @@ for year in years:
                         src_nodata=src.nodata,
                     )
 
-                normalised_data = normalise_spam_data_01(item_dataset, pixel_areas, target_shape, unit_conv=100)
+                const_array = np.ones_like(pixel_areas)
+                normalised_data = normalise_spam_data_01(item_dataset, const_array, target_shape, unit_conv=100)
                 
                 for iso3 in country_isos: 
                     mean_value, mean_err = process_country(iso3, normalised_data, band_data)
