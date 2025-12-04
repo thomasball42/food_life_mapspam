@@ -10,9 +10,7 @@ from osgeo import gdal
 
 gdal.SetCacheMax(3 * 1024 * 1024 * 1024)
 
-# years = ["2000", "2005", "2010", "2020"]
-# years = ["2000"]
-years = ["2005", "2010", "2020"]
+years = ["2000", "2005", "2010", "2020"]
 
 multithread = 16
 overwrite = False

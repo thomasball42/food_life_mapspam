@@ -7,8 +7,8 @@ import LIFE.utils.raster_sum
 import LIFE.utils.species_totals
 import LIFE.deltap.delta_p_scaled
 
-# years = ["2000", "2005", "2010", "2020"]
-years = ["2005", "2010", "2020"]
+years = ["2000", "2005", "2010", "2020"]
+
 multithread = 16
 venv_path = "/maps/tsb42/york_sei_2025/env/"
 CURVE = "0.25"

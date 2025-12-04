@@ -3,8 +3,8 @@ import subprocess
 from pathlib import Path
 import LIFE.utils.speciesgenerator
 
-# years = ["2000", "2005", "2010", "2020"]
-years = ["2005", "2010", "2020"]
+years = ["2000", "2005", "2010", "2020"]
+
 multithread = 16
 venv_path = "/maps/tsb42/york_sei_2025/env/"
 
