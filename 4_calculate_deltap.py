@@ -15,10 +15,12 @@ CURVE = "0.25"
 SCENARIOS = ["restore_agriculture"]
 TAXA = ["AMPHIBIA", "AVES", "MAMMALIA", "REPTILIA"]
 
+data_dirs_path = "data/data_dirs"
+
 def main():
 
     for year in years:
-        year_path = os.path.join("data", "data_dirs", str(year))
+        year_path = os.path.join(data_dirs_path, str(year))
         
         print("Generating persistence calculator batch file")
         _persistencegenerator_mod.species_generator(

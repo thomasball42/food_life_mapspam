@@ -10,11 +10,13 @@ venv_path = "/maps/tsb42/york_sei_2025/env/"
 
 SCENARIOS = ["current", "pnv", "restore_agriculture"]
 
+data_dirs_path = "data/data_dirs"
+
 def main():
 
     for year in years:
-        year_path = os.path.join("data", "data_dirs", str(year))
-
+        year_path = os.path.join(data_dirs_path, str(year))
+        
         if not os.path.isdir(os.path.join(year_path, "aohs")):
             os.makedirs(os.path.join(year_path, "aohs"), exist_ok=True)
         

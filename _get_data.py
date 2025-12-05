@@ -33,22 +33,6 @@ def download_file(url, filename):
         except Exception as e:
             print(f"\n An unexpected error occurred: {e}")
 
-def get_country_data():
-    # url = "https://datacatalogfiles.worldbank.org/ddh-published/0038272/5/DR0095371/World Bank Official Boundaries (Shapefiles)/World Bank Official Boundaries - Admin 0.zip"
-    url = "https://github.com/wmgeolab/geoBoundaries/raw/main/releaseData/CGAZ/geoBoundariesCGAZ_ADM0.zip"
-    # url = "https://geodata.ucdavis.edu/gadm/gadm4.1/gadm_410-gpkg.zip"
-    
-    country_data = os.path.join("data", "inputs", "country_data", url.split("/")[-1])
-    if not os.path.isfile(country_data):
-        print(f"Downloading country shapefiles from {url}...")
-        os.makedirs(os.path.dirname(country_data), exist_ok=True)
-
-        download_file(url, country_data)
-        with zipfile.ZipFile(country_data, 'r') as zip_ref:
-            zip_ref.extractall(os.path.dirname(country_data))
-    else:
-        print("World Bank shapefiles already present - skipping download")
-
 def get_data():
 
     with open('data_urls.json', 'r') as f:
@@ -137,8 +121,6 @@ def get_data():
         subprocess.run(command, shell = True)
     else:
         print("Elevation data already present - skipping download and processing")
-
-    get_country_data()
 
 if __name__ == "__main__":
     get_data()
