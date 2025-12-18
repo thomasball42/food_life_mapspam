@@ -66,3 +66,19 @@ def summarise_spam_layers(year_data, year, spam_year_file, target_shape=(2160, 4
         nodata=-1
     ) as dst:
         dst.write(proportional_output.astype(np.float32), indexes=1)
+
+    # also output total hectares
+    total_hectares_filename = spam_year_file.replace(".tif", "_total_hectares.tif")
+    with rasterio.open(
+        total_hectares_filename,
+        "w", 
+        driver="GTiff", 
+        height=target_shape[0], 
+        width=target_shape[1], 
+        count=1, 
+        dtype=np.float32, 
+        crs=src.crs,
+        transform=global_transform,
+        nodata=-1
+    ) as dst:
+        dst.write(np.where(proportional_output < 0, -1, total_hectares).astype(np.float32), indexes=1)    

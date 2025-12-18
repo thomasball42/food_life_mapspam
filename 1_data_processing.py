@@ -107,8 +107,6 @@ def main(data_dirs_path=data_dirs_path):
             }
         }
 
-
-
     with open("data_index.json", 'w') as f:
         data_index = json.dump(data_index, f, indent=4)
 

@@ -36,16 +36,15 @@ def get_gdal_metadata(file_path: str) -> dict | None:
         }
 
     except subprocess.CalledProcessError as e:
-        print(f"❌ Error during gdalinfo execution (check if GDAL is in PATH):")
+        print(f"Error during gdalinfo execution (check if GDAL is in PATH):")
         print(e.stderr)
         return None
     except FileNotFoundError:
-        print("❌ Error: gdalinfo command not found. Ensure GDAL is installed and accessible in your PATH.")
+        print("Error: gdalinfo command not found. Ensure GDAL is installed and accessible in your PATH.")
         return None
     except json.JSONDecodeError:
-        print("❌ Error: gdalinfo output could not be parsed as JSON. Check GDAL version.")
+        print("Error: gdalinfo output could not be parsed as JSON. Check GDAL version.")
         return None
-
 
 def realign_geotiff_origin(file_path: str, tolerance: float, origin: tuple = (-180.0, 90.0)) -> None:
     """
@@ -53,7 +52,7 @@ def realign_geotiff_origin(file_path: str, tolerance: float, origin: tuple = (-1
     using gdal_edit.py via subprocess, relying entirely on command-line GDAL tools.
     """
     if not os.path.exists(file_path):
-        print(f"❌ Error: File not found at {file_path}")
+        print(f"Error: File not found at {file_path}")
         return
 
     # --- 1. GET METADATA VIA GDALINFO COMMAND ---
@@ -139,3 +138,10 @@ def realign_geotiff_origin(file_path: str, tolerance: float, origin: tuple = (-1
         print(e.stderr)
     except FileNotFoundError:
         print("Error: gdal_edit.py command not found. Ensure GDAL is installed and accessible in your PATH.")
+
+
+
+
+
+
+    

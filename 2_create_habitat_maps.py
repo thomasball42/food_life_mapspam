@@ -5,7 +5,7 @@ import subprocess
 import os
 from pathlib import Path
 import _build_spam_layer
-from _gdal_aligner import realign_geotiff_origin
+from _utils import realign_geotiff_origin
 from osgeo import gdal
 
 gdal.SetCacheMax(3 * 1024 * 1024 * 1024)
@@ -124,7 +124,7 @@ def main(data_dirs_path=data_dirs_path):
             print("done.")
 
 
-        if not os.path.isfile(os.path.join(current_dir, 'crop.tif')) or not os.path.isfile(os.path.join(current_dir, 'pasture.tif')) or overwrite:
+        if not os.path.isfile(os.path.join(food_processing_dir, 'crop.tif')) or not os.path.isfile(os.path.join(food_processing_dir, 'pasture.tif')) or overwrite:
             print(f"Building GAEZ + HYDE layers for year {year}...", end=" ")
             # run this as a subprocess to avoid import problem
             command = f"""python3 ./prepare_layers/build_gaez_hyde.py --gaez {Path(os.path.join("..", 'data', 'food', "mapspam", f'mapspam_all_{year}.tif'))} \
