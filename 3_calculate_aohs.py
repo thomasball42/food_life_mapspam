@@ -8,7 +8,7 @@ years = ["2000", "2005", "2010", "2020"]
 multithread = 16
 venv_path = "/maps/tsb42/york_sei_2025/env/"
 
-SCENARIOS = ["current", "pnv", "restore_agriculture"]
+SCENARIOS = ["current", "pnv", "plantation_world"]
 
 data_dirs_path = "data/data_dirs"
 
@@ -40,7 +40,7 @@ def main():
                         """
             subprocess.run(command, shell = True)
             
-            for _ in ["pnv", "current", "restore_agriculture"]:
+            for _ in ["pnv", "current", "plantation_world"]:
                 print(f"Collating results {_}...")
                 command = f""" aoh-collate-data --aoh_results {os.path.join(year_path, "aohs", _)} \
                             --output {os.path.join(year_path, "aohs", f"{_}.csv")}

@@ -10,7 +10,7 @@ from osgeo import gdal
 
 gdal.SetCacheMax(3 * 1024 * 1024 * 1024)
 
-years = ["2000", "2005", "2010", "2020"]
+years = ["2020"]
 
 multithread = 16
 overwrite = False
@@ -108,7 +108,7 @@ def main(data_dirs_path=data_dirs_path):
         hab_maps_dir = os.path.join(year_dir, "habitat_maps")
         current_dir = os.path.join(hab_maps_dir, 'current')
         pnv_dir = os.path.join(hab_maps_dir, 'pnv')
-        scenario_dir = os.path.join(hab_maps_dir, 'restore_agriculture')
+        scenario_dir = os.path.join(hab_maps_dir, 'plantation_world')
 
         food_processing_dir = os.path.join(year_dir, "food_processing")
 
@@ -179,49 +179,91 @@ def main(data_dirs_path=data_dirs_path):
             subprocess.run(command, shell=True)
             print("done.")
 
-
-        # build restoration map
+        # build plantation_world map
         if os.path.isfile(os.path.join(year_dir, f'restore_agriculture.tif')) or overwrite:
-            print(f"Restoration habitat map exists - skipping creation")
+            print(f"Plantation map exists - skipping creation")
         else:
-            print(f"Creating restoration habitat map for year {year}...")
-            import LIFE.prepare_layers.make_restore_agriculture_map
-            LIFE.prepare_layers.make_restore_agriculture_map.make_restore_map(
+            print(f"Creating plantation_world habitat map for year {year}...")
+            import LIFE.prepare_layers.make_plantation_map
+            LIFE.prepare_layers.make_plantation_map.make_plantation_map(
                 pnv_path = Path(os.path.join('data', 'inputs', 'habitat', 'pnv_raw.tif')),
                 current_path = Path(os.path.join(year_dir, 'current_raw.tif')),
                 crosswalk_path = Path(os.path.join('data', "inputs", 'crosswalk.csv')),
-                output_path = Path(os.path.join(year_dir, 'restore_agriculture.tif')),
+                output_path = Path(os.path.join(year_dir, 'plantation_world.tif')),
                 concurrency = int(multithread),
                 show_progress=True,
             )
             print("done.")
 
         if not os.path.isfile(os.path.join(scenario_dir, "lcc_100.tif")) or overwrite:
-            print(f"Running AOH processing on restoration habitat map for year {year}...")
-            command = f"""aoh-habitat-process --habitat {os.path.join(year_dir, 'restore_agriculture.tif')} \
+            print(f"Running AOH processing on plantation_world habitat map for year {year}...")
+            command = f"""aoh-habitat-process --habitat {os.path.join(year_dir, 'plantation_world.tif')} \
                         --scale 0.083333333333333 \
                         --output {scenario_dir}"""
             subprocess.run(command, shell=True)
             print("done.")
         else:
-            print(f"AOH-processed restoration habitat map for year {year} exists - skipping creation")
+            print(f"AOH-processed plantation_world habitat map for year {year} exists - skipping creation")
 
-        if not os.path.isfile(os.path.join(year_dir, "restore_agriculture_diff_area.tif")) or overwrite:
-            print(f"Creating restoration habitat difference map for year {year}...")
+        if not os.path.isfile(os.path.join(year_dir, "plantation_world_diff_area.tif")) or overwrite:
+            print(f"Creating plantation_world habitat difference map for year {year}...")
             import LIFE.prepare_layers.make_diff_map
             LIFE.prepare_layers.make_diff_map.make_diff_map(
                 current_path = Path(os.path.join(year_dir, 'current_raw.tif')),
-                scenario_path = Path(os.path.join(year_dir, 'restore_agriculture.tif')),
+                scenario_path = Path(os.path.join(year_dir, 'plantation_world.tif')),
                 area_path = Path(os.path.join('data', "inputs", 'area-per-pixel.tif')),
                 pixel_scale = 0.083333333333333,
-                output_path = Path(os.path.join(year_dir, 'restore_agriculture_diff_area.tif')),
+                output_path = Path(os.path.join(year_dir, 'plantation_world_diff_area.tif')),
                 target_projection=None,
                 concurrency = int(multithread),
                 show_progress=True
             )
             print("done.")
         else:   
-            print(f"Restoration habitat difference map for year {year} exists - skipping creation")
+            print(f"Plantation habitat difference map for year {year} exists - skipping creation")
+
+        # # build restoration map
+        # if os.path.isfile(os.path.join(year_dir, f'restore_agriculture.tif')) or overwrite:
+        #     print(f"Restoration habitat map exists - skipping creation")
+        # else:
+        #     print(f"Creating restoration habitat map for year {year}...")
+        #     import LIFE.prepare_layers.make_restore_agriculture_map
+        #     LIFE.prepare_layers.make_restore_agriculture_map.make_restore_map(
+        #         pnv_path = Path(os.path.join('data', 'inputs', 'habitat', 'pnv_raw.tif')),
+        #         current_path = Path(os.path.join(year_dir, 'current_raw.tif')),
+        #         crosswalk_path = Path(os.path.join('data', "inputs", 'crosswalk.csv')),
+        #         output_path = Path(os.path.join(year_dir, 'restore_agriculture.tif')),
+        #         concurrency = int(multithread),
+        #         show_progress=True,
+        #     )
+        #     print("done.")
+
+        # if not os.path.isfile(os.path.join(scenario_dir, "lcc_100.tif")) or overwrite:
+        #     print(f"Running AOH processing on restoration habitat map for year {year}...")
+        #     command = f"""aoh-habitat-process --habitat {os.path.join(year_dir, 'restore_agriculture.tif')} \
+        #                 --scale 0.083333333333333 \
+        #                 --output {scenario_dir}"""
+        #     subprocess.run(command, shell=True)
+        #     print("done.")
+        # else:
+        #     print(f"AOH-processed restoration habitat map for year {year} exists - skipping creation")
+
+        # if not os.path.isfile(os.path.join(year_dir, "restore_agriculture_diff_area.tif")) or overwrite:
+        #     print(f"Creating restoration habitat difference map for year {year}...")
+        #     import LIFE.prepare_layers.make_diff_map
+        #     LIFE.prepare_layers.make_diff_map.make_diff_map(
+        #         current_path = Path(os.path.join(year_dir, 'current_raw.tif')),
+        #         scenario_path = Path(os.path.join(year_dir, 'restore_agriculture.tif')),
+        #         area_path = Path(os.path.join('data', "inputs", 'area-per-pixel.tif')),
+        #         pixel_scale = 0.083333333333333,
+        #         output_path = Path(os.path.join(year_dir, 'restore_agriculture_diff_area.tif')),
+        #         target_projection=None,
+        #         concurrency = int(multithread),
+        #         show_progress=True
+        #     )
+        #     print("done.")
+        # else:   
+        #     print(f"Restoration habitat difference map for year {year} exists - skipping creation")
 
 if __name__ == "__main__":
     main() 

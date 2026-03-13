@@ -11,7 +11,7 @@ import _get_country_boundaries
 
 multithread = 16
 overwrite = False
-years = ["2000", "2005", "2010", "2020"] # hardcoding because I don't think these will change in the immediate future..
+years = ["2020"] # hardcoding because I don't think these will change in the immediate future..
 data_dirs_path = "data/data_dirs"
 
 def main(data_dirs_path=data_dirs_path):
@@ -86,7 +86,7 @@ def main(data_dirs_path=data_dirs_path):
         mod_path = os.path.join('data', 'food', 'hyde', "modified_" + os.path.split(hyde_year_path)[1])
 
         # even though they have the same res it's not to the same precision, this sorts that..
-        if not os.path.isfile(mod_path) or overwrite or True:
+        if not os.path.isfile(mod_path) or overwrite:
             if not os.path.isdir(os.path.join("data", "food", "hyde")):
                 os.makedirs(os.path.join("data", "food", "hyde"), exist_ok=True)
             if os.path.isfile(hyde_year_path):
